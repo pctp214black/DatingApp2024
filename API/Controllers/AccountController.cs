@@ -27,7 +27,21 @@ public class AccountController(DataContext context):BaseApiController{
 
     [HttpPost("login")]
     public async Task<ActionResult<AppUser>> Login(LoginRequest request){
+        var user = await context.Users.FirstOrDefaultAsync(x=>
+            x.UserName.ToLower()==request.UserName.ToLower()
+        );
+        if(user==null){
+            return Unauthorized("Invalid username or password");
+        }
+        using var hmac =new HMACSHA512(user.PasswordSalt);
+        var computeHash=hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
+        for (int i = 0; i < computeHash.Length; i++){
+            if(computeHash[i]!=user.PasswordHash[i]){
+                return Unauthorized("Invalid username or password");
+            }
+        }
         
+        return user;
     }
 
     private async Task<bool> UserExistsAsync(string username){

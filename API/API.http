@@ -11,10 +11,22 @@ GET {{API_HostAddress}}/api/v1/users
 ###Get user by Id
 ###https://localhost:5001/api/v1/users/1
 GET {{API_HostAddress}}/api/v1/users/1
+Authorization: Bearer Token
 
 ###Create a new user
 ###https://localhost:5001/api/v1/account/register
 POST {{API_HostAddress}}/api/v1/account/register
+Content-Type: application/json
+
+{
+    "username":"Leo",
+    "password":"Wick"
+}
+
+
+###Login a user
+###https://localhost:5001/api/v1/account/login
+POST {{API_HostAddress}}/api/v1/account/login
 Content-Type: application/json
 
 {

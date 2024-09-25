@@ -3,14 +3,21 @@ using System.Text;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-public class AccountController(DataContext context):BaseApiController{
+
+public class AccountController(
+    DataContext context
+    ,ITokenService tokenService):BaseApiController{
+    
+    
     [HttpPost("register")]
-    public async Task<ActionResult<AppUser>> RegisterAsync([FromBody]RegisterRequest request){
+    public async Task<ActionResult<UserResponse>> RegisterAsync([FromBody]RegisterRequest request){
         if (await UserExistsAsync(request.UserName))return BadRequest("Username already exists");
         using var hmac=new HMACSHA512();
 
@@ -22,11 +29,14 @@ public class AccountController(DataContext context):BaseApiController{
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
-        return user;
+        return new UserResponse{
+            Username=user.UserName,
+            Token=tokenService.CreateToken(user)
+        };
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<AppUser>> Login(LoginRequest request){
+    public async Task<ActionResult<UserResponse>> Login(LoginRequest request){
         var user = await context.Users.FirstOrDefaultAsync(x=>
             x.UserName.ToLower()==request.UserName.ToLower()
         );
@@ -41,7 +51,10 @@ public class AccountController(DataContext context):BaseApiController{
             }
         }
         
-        return user;
+        return new UserResponse{
+            Username=user.UserName,
+            Token=tokenService.CreateToken(user)
+        };
     }
 
     private async Task<bool> UserExistsAsync(string username){

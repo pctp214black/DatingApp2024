@@ -10,8 +10,8 @@ GET {{API_HostAddress}}/api/v1/users
 
 ###Get user by Id
 ###https://localhost:5001/api/v1/users/1
-GET {{API_HostAddress}}/api/v1/users/1
-Authorization: Bearer Token
+GET {{API_HostAddress}}/api/v1/users/2
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJKb2huIiwibmJmIjoxNzI3NDU0MDU0LCJleHAiOjE3MjgwNTg4NTQsImlhdCI6MTcyNzQ1NDA1NH0.BNtdg__2jDUPH1KxlheLzvl8qL_WTFTkrkwWaGj_xANom3UmNNaTFQzDYPXhjQGqt9NDXqg5olw6UDrGng-eJw
 
 ###Create a new user
 ###https://localhost:5001/api/v1/account/register

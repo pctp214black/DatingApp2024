@@ -1,6 +1,35 @@
-@API_HostAddress = http://localhost:5227
+@API_HostAddress = https://localhost:5001
 
-GET {{API_HostAddress}}/weatherforecast/
-Accept: application/json
+###Get weatherforecast
+###https://localhost:5001/api/v1/weatherforecast
+GET {{API_HostAddress}}/api/v1/weatherforecast
 
-###
+###Get all users
+###https://localhost:5001/api/v1/users
+GET {{API_HostAddress}}/api/v1/users
+
+###Get user by Id
+###https://localhost:5001/api/v1/users/1
+GET {{API_HostAddress}}/api/v1/users/2
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJKb2huIiwibmJmIjoxNzI3NDU0MDU0LCJleHAiOjE3MjgwNTg4NTQsImlhdCI6MTcyNzQ1NDA1NH0.BNtdg__2jDUPH1KxlheLzvl8qL_WTFTkrkwWaGj_xANom3UmNNaTFQzDYPXhjQGqt9NDXqg5olw6UDrGng-eJw
+
+###Create a new user
+###https://localhost:5001/api/v1/account/register
+POST {{API_HostAddress}}/api/v1/account/register
+Content-Type: application/json
+
+{
+    "username":"Leo",
+    "password":"Wick"
+}
+
+
+###Login a user
+###https://localhost:5001/api/v1/account/login
+POST {{API_HostAddress}}/api/v1/account/login
+Content-Type: application/json
+
+{
+    "username":"John",
+    "password":"Wick"
+}

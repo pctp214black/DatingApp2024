@@ -18,22 +18,24 @@ public class AccountController(
     {
         if (await UserExistsAsync(request.UserName))
             return BadRequest("Username already exists");
-        using var hmac = new HMACSHA512();
+        // using var hmac = new HMACSHA512();
 
-        var user = new AppUser
-        {
-            UserName = request.UserName,
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password)),
-            PasswordSalt = hmac.Key
-        };
+        // var user = new AppUser
+        // {
+        //     UserName = request.UserName,
+        //     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password)),
+        //     PasswordSalt = hmac.Key
+        // };
 
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
-        return new UserResponse
-        {
-            Username = user.UserName,
-            Token = tokenService.CreateToken(user)
-        };
+        // context.Users.Add(user);
+        // await context.SaveChangesAsync();
+        // return new UserResponse
+        // {
+        //     Username = user.UserName,
+        //     Token = tokenService.CreateToken(user)
+        // };
+
+        return Ok();
     }
 
     [HttpPost("login")]

@@ -21,7 +21,7 @@ export class NavComponent {
 
   login(): void {
     this.accountService.login(this.model).subscribe({
-      next: () => {
+      next:_ => {
         this.router.navigateByUrl("/members");
       },
       error: (error) => {

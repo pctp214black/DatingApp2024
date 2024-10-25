@@ -4,7 +4,10 @@ using System.Net;
 using System.Text.Json;
 using API.Errors;
 
-public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
+public class ExceptionMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionMiddleware> logger,
+    IHostEnvironment env)
 {
     public async Task InvokeAsync(HttpContext context)
     {
@@ -20,8 +23,8 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
 
             var response = env.IsDevelopment()
                 ? new ApiException(context.Response.StatusCode, ex.Message, ex.StackTrace)
-                : new ApiException(context.Response.StatusCode, ex.Message, "Internal server error");
-            
+                : new ApiException(context.Response.StatusCode, ex.Message, "Internal Server Error");
+
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -32,5 +35,4 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
             await context.Response.WriteAsync(json);
         }
     }
-
 }

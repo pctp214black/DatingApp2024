@@ -14,39 +14,37 @@ public class UsersController : BaseApiController
 {
     private readonly DataContext _context;
     private readonly IUserRepository _repository;
-    private readonly IMapper _mapper;
 
-    public UsersController(IMapper mapper, IUserRepository userRepository)
+    public UsersController(IUserRepository userRepository)
     {
         _repository = userRepository;
-        _mapper=mapper;
     }
 
     [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<List<MemberReponse>>> GetUsersAsync()
     {
-        var users = await _repository.GetAllAsync();
-        return Ok(users);
+        var members = await _repository.GetMembersAsync();
+        return Ok(members);
     }
 
-    [Authorize]
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<MemberReponse>> GetUserById(int id)
-    {
-        var user = await _repository.GetByIdAsync(id);
+    // [Authorize]
+    // [HttpGet("{id:int}")]
+    // public async Task<ActionResult<MemberReponse>> GetUserById(int id)
+    // {
+    //     var user = await _repository.GetByIdAsync(id);
 
-        if (user == null)
-            return NotFound();
-        return _mapper.Map<MemberReponse>(user);
-    }
+    //     if (user == null)
+    //         return NotFound();
+    //     return _mapper.Map<MemberReponse>(user);
+    // }
     [HttpGet("{username}")]
-    public async Task<ActionResult<AppUser>> GetByUsernameAsync(string username)
+    public async Task<ActionResult<MemberReponse>> GetByUsernameAsync(string username)
     {
-        var user = await _repository.GetByUsernameAsync(username);
+        var member = await _repository.GetMemeberAsync(username);
 
-        if (user == null)
+        if (member == null)
             return NotFound();
-        return user;
+        return member;
     }
 }

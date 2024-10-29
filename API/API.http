@@ -10,8 +10,14 @@ GET {{API_HostAddress}}/api/v1/users
 
 ###Get user by Id
 ###https://localhost:5001/api/v1/users/1
-GET {{API_HostAddress}}/api/v1/users/2
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJKb2huIiwibmJmIjoxNzI3NDU0MDU0LCJleHAiOjE3MjgwNTg4NTQsImlhdCI6MTcyNzQ1NDA1NH0.BNtdg__2jDUPH1KxlheLzvl8qL_WTFTkrkwWaGj_xANom3UmNNaTFQzDYPXhjQGqt9NDXqg5olw6UDrGng-eJw
+GET {{API_HostAddress}}/api/v1/users/1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhcmVuaXRhIiwibmJmIjoxNzI5NjkxNjMyLCJleHAiOjE3MzAyOTY0MzIsImlhdCI6MTcyOTY5MTYzMn0.DdcSCAbeX6RNZbZ_o1GpZlX9Y-BWSavVRFF6WGqu37AsNOicLJrrb6C-n6OywQ8wI3hidmkyOXcNHW7msWNdHA
+
+###Get user by username
+###https://localhost:5001/api/v1/users/arenita
+GET {{API_HostAddress}}/api/v1/users/arenita
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhcmVuaXRhIiwibmJmIjoxNzMwMjA4MTg3LCJleHAiOjE3MzA4MTI5ODcsImlhdCI6MTczMDIwODE4N30.dZEcu6XKeZUylwHmOKmDcu6_DOpVzZDIgvpOz60OYaD0yOHRrgkIh0CY1EOW8LMSzJ3QUE-ucXS-LbTW5bqPtA
+
 
 ###Create a new user
 ###https://localhost:5001/api/v1/account/register
@@ -24,12 +30,30 @@ Content-Type: application/json
 }
 
 
+###View what fields are required
+###https://localhost:5001/api/v1/account/register
+POST {{API_HostAddress}}/api/v1/account/register
+Content-Type: application/json
+
+{
+}
+
 ###Login a user
 ###https://localhost:5001/api/v1/account/login
 POST {{API_HostAddress}}/api/v1/account/login
 Content-Type: application/json
 
 {
-    "username":"John",
-    "password":"Wick"
+    "username":"arenita",
+    "password":"123456"
 }
+
+###Get Server error
+###https://localhost:5001/api/v1/Buggy/server-error
+GET {{API_HostAddress}}/api/v1/Buggy/server-error
+
+###Get bad request
+###https://localhost:5001/api/v1/Buggy/bad-request
+GET {{API_HostAddress}}/api/v1/Buggy/bad-request
+
+server-error

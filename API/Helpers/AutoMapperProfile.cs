@@ -21,6 +21,6 @@ public class AutoMapperProfiles : Profile
             )
         );
         CreateMap<Photo, PhotoResponse>();
-
+        CreateMap<MemberUpdateRequest, AppUser>();
     }
 }

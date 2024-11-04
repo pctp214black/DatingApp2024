@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Member } from '../_models/memeber';
+import { publishFacade } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +17,8 @@ export class MembersService {
 
   getMember(username:string){
     return this.http.get<Member>(this.baseUrl+"users/"+username)
+  }
+  updateMember(member:Member){
+    return this.http.put(this.baseUrl+"users",member);
   }
 }

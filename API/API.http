@@ -48,6 +48,18 @@ Content-Type: application/json
     "password":"123456"
 }
 
+###Actualizar usuario
+PUT {{API_HostAddress}}/api/v1/users/
+Content-Type: application/json
+
+{
+    "Introduction":"Introduction updated", 
+    "LookingFor":"Looking For updated", 
+    "Interests":"Interest updated", 
+    "City":"City updated",
+    "Country":"Country updated", 
+}
+
 ###Get Server error
 ###https://localhost:5001/api/v1/Buggy/server-error
 GET {{API_HostAddress}}/api/v1/Buggy/server-error

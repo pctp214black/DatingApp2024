@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Member } from '../_models/memeber';
 import { publishFacade } from '@angular/compiler';
+import { of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,15 +11,29 @@ import { publishFacade } from '@angular/compiler';
 export class MembersService {
   private http=inject(HttpClient);
   baseUrl=environment.apiUrl;
+  members=signal<Member[]>([]);
 
   getMembers(){
-    return this.http.get<Member[]>(this.baseUrl+"users");
+    return this.http.get<Member[]>(this.baseUrl+"users").subscribe({
+      next:members=>this.members.set(members)
+    });
+    //return this.http.get<Member[]>(this.baseUrl+"users");
   }
 
   getMember(username:string){
-    return this.http.get<Member>(this.baseUrl+"users/"+username)
+    const member=this.members().find(m=>m.userName===username);
+    if(member!==undefined){
+      return of(member)
+    }
+    return this.http.get<Member>(this.baseUrl+"users/"+username);
   }
   updateMember(member:Member){
-    return this.http.put(this.baseUrl+"users",member);
+    return this.http.put(this.baseUrl+"users",member).pipe(
+      tap(()=>{
+        this.members.update(members=>members.map(m=>m.userName===member.userName ? member:m))
+      })
+    )
+    //return this.http.put(this.baseUrl+"users",member);
+
   }
 }

@@ -41,7 +41,7 @@ public class AccountController(
     [HttpPost("login")]
     public async Task<ActionResult<UserResponse>> Login(LoginRequest request)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x =>
+        var user = await context.Users.Include(x => x.Photos).FirstOrDefaultAsync(x =>
             x.UserName.ToLower() == request.UserName.ToLower()
         );
         if (user == null)
@@ -53,6 +53,7 @@ public class AccountController(
         for (int i = 0; i < computeHash.Length; i++)
         {
             if (computeHash[i] != user.PasswordHash[i])
+
             {
                 return Unauthorized("Invalid username or password");
             }
@@ -61,7 +62,8 @@ public class AccountController(
         return new UserResponse
         {
             Username = user.UserName,
-            Token = tokenService.CreateToken(user)
+            Token = tokenService.CreateToken(user),
+            PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain)?.Url,
         };
     }
 

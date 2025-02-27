@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\pctp2\\OneDrive\\Documentos\\UAA\\10mo Semestre\\Angular SPA\\DatingApp\\API\\API.csproj": {}
+    "C:\\Users\\pctp2\\OneDrive\\Documentos\\UAA\\9no Semestre\\Servicios Web\\DatingApp\\API\\API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\pctp2\\OneDrive\\Documentos\\UAA\\10mo Semestre\\Angular SPA\\DatingApp\\API\\API.csproj": {
+    "C:\\Users\\pctp2\\OneDrive\\Documentos\\UAA\\9no Semestre\\Servicios Web\\DatingApp\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\pctp2\\OneDrive\\Documentos\\UAA\\10mo Semestre\\Angular SPA\\DatingApp\\API\\API.csproj",
+        "projectUniqueName": "C:\\Users\\pctp2\\OneDrive\\Documentos\\UAA\\9no Semestre\\Servicios Web\\DatingApp\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "C:\\Users\\pctp2\\OneDrive\\Documentos\\UAA\\10mo Semestre\\Angular SPA\\DatingApp\\API\\API.csproj",
+        "projectPath": "C:\\Users\\pctp2\\OneDrive\\Documentos\\UAA\\9no Semestre\\Servicios Web\\DatingApp\\API\\API.csproj",
         "packagesPath": "C:\\Users\\pctp2\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\pctp2\\OneDrive\\Documentos\\UAA\\10mo Semestre\\Angular SPA\\DatingApp\\API\\obj\\",
+        "outputPath": "C:\\Users\\pctp2\\OneDrive\\Documentos\\UAA\\9no Semestre\\Servicios Web\\DatingApp\\API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -43,8 +43,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -53,10 +52,6 @@
             "AutoMapper": {
               "target": "Package",
               "version": "[13.0.1, )"
-            },
-            "CloudinaryDotNet": {
-              "target": "Package",
-              "version": "[1.27.3, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
@@ -96,7 +91,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

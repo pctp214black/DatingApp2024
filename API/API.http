@@ -10,8 +10,14 @@ GET {{API_HostAddress}}/api/v1/users
 
 ###Get user by Id
 ###https://localhost:5001/api/v1/users/1
-GET {{API_HostAddress}}/api/v1/users/2
-Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJKb2huIiwibmJmIjoxNzI3NDU0MDU0LCJleHAiOjE3MjgwNTg4NTQsImlhdCI6MTcyNzQ1NDA1NH0.BNtdg__2jDUPH1KxlheLzvl8qL_WTFTkrkwWaGj_xANom3UmNNaTFQzDYPXhjQGqt9NDXqg5olw6UDrGng-eJw
+GET {{API_HostAddress}}/api/v1/users/1
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhcmVuaXRhIiwibmJmIjoxNzI5NjkxNjMyLCJleHAiOjE3MzAyOTY0MzIsImlhdCI6MTcyOTY5MTYzMn0.DdcSCAbeX6RNZbZ_o1GpZlX9Y-BWSavVRFF6WGqu37AsNOicLJrrb6C-n6OywQ8wI3hidmkyOXcNHW7msWNdHA
+
+###Get user by username
+###https://localhost:5001/api/v1/users/arenita
+GET {{API_HostAddress}}/api/v1/users/arenita
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhcmVuaXRhIiwibmJmIjoxNzMxNTI0NTAzLCJleHAiOjE3MzIxMjkzMDMsImlhdCI6MTczMTUyNDUwM30.AuOqFPgwe5_dITZqalF3IxbGoUm6QvXalLpw5e0UTxB4PDPC_JyaaReg_jAE361hdpzwZMGAhzdH5C5vaJCZyg
+
 
 ###Create a new user
 ###https://localhost:5001/api/v1/account/register
@@ -19,10 +25,34 @@ POST {{API_HostAddress}}/api/v1/account/register
 Content-Type: application/json
 
 {
-    "username":"Leo",
-    "password":"Wick"
+    "UserName": "arenita",
+    "Password":"123456",
+    "Gender": "female",
+    "BirthDay": "1956-07-22",
+    "KnownAs": "Arenita",
+    "Created": "2020-06-24",
+    "LastActive": "2020-06-21",
+    "Introduction": "Sunt esse aliqua ullamco in incididunt consequat commodo. Nisi ad esse elit ipsum commodo fugiat est ad. Incididunt nostrud incididunt nostrud sit excepteur occaecat.\r\n",
+    "LookingFor": "Dolor anim cupidatat occaecat aliquip et Lorem ut elit fugiat. Mollit eu pariatur est sunt. Minim fugiat sit do dolore eu elit ex do id sunt. Qui fugiat nostrud occaecat nisi est dolor qui fugiat laborum cillum. Occaecat consequat ex mollit commodo ad irure cillum nulla velit ex pariatur veniam cupidatat. Officia veniam officia non deserunt mollit.\r\n",
+    "Interests": "Sit sit incididunt proident velit.",
+    "City": "Greenbush",
+    "Country": "Martinique",
+    "Photos": [
+        {
+            "Url": "https://randomuser.me/api/portraits/women/54.jpg",
+            "IsMain": true
+        }
+    ]
 }
 
+
+###View what fields are required
+###https://localhost:5001/api/v1/account/register
+POST {{API_HostAddress}}/api/v1/account/register
+Content-Type: application/json
+
+{
+}
 
 ###Login a user
 ###https://localhost:5001/api/v1/account/login
@@ -30,6 +60,32 @@ POST {{API_HostAddress}}/api/v1/account/login
 Content-Type: application/json
 
 {
-    "username":"John",
-    "password":"Wick"
+    "username":"arenita",
+    "password":"123456"
 }
+
+###Actualizar usuario
+PUT {{API_HostAddress}}/api/v1/users/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhcmVuaXRhIiwibmJmIjoxNzMxNTIxNjQ2LCJleHAiOjE3MzIxMjY0NDYsImlhdCI6MTczMTUyMTY0Nn0.CVTBxSdy3OpHLnFc1kimhjMD_PuGDygd3bsYKfa3vEAGNEk3lZrvPDas2NJmaA-gEZHvbdhAbguh9NNjFH5O-A
+
+{
+    "Introduction":"Introduction updated", 
+    "LookingFor":"Looking For updated", 
+    "Interests":"Interest updated", 
+    "City":"City updated",
+    "Country":"Country updated"
+}
+
+###Get Server error
+###https://localhost:5001/api/v1/Buggy/server-error
+GET {{API_HostAddress}}/api/v1/Buggy/server-error
+
+###Get bad request
+###https://localhost:5001/api/v1/Buggy/bad-request
+GET {{API_HostAddress}}/api/v1/Buggy/bad-request
+
+###Get bad request
+###https://localhost:5001/api/v1/Buggy/bad-request
+GET {{API_HostAddress}}/api/v1/Buggy/auth
+Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhcmVuaXRhIiwibmJmIjoxNzMxNTIxNTA4LCJleHAiOjE3MzIxMjYzMDgsImlhdCI6MTczMTUyMTUwOH0.jg4Xx69VQAkMGqdtF8KirSN3HAWBjnlu0AFZ2nlrvfeaUv2QrxjThE3wEl9i2-iXzLaRgyzbWUdbNNQ0RQq-VQ

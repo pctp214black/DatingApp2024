@@ -5,11 +5,12 @@ import { NavComponent } from './nav/nav.component';
 import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
 import { AccountService } from './_services/account.service';
 import { HomeComponent } from './home/home.component';
+import { NgxSpinner, NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgFor,NavComponent, BsDropdownModule,HomeComponent],
+  imports: [RouterOutlet, NgFor,NavComponent, BsDropdownModule,HomeComponent,NgxSpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

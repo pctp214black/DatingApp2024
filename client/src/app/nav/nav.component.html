@@ -18,16 +18,20 @@
                     <a class="nav-link" (click)="logout()">Logout</a>
                 </li> -->
             }
+            <li class="nav-item">
+                <a routerLink="errors" routerLinkActive="active" class="nav-link">Errors</a>
+            </li>
         </ul>
         
 
         @if (accountService.currentUser()) {
             <div dropdown class="dropdown">
+                <img class="me-2" src="{{accountService.currentUser()?.photoUrl || './assets/default_user.jpg'}}" alt="User main photo">
                 <a dropdownToggle class="dropdown-toogle text-light text-decoration-none">
                     Welcome {{accountService.currentUser()?.username|titlecase}}
                 </a>
                 <div *dropdownMenu class="dropdown-menu">
-                    <a class="dropdown-item">Profile</a>
+                    <a routerLink="/member/edit" class="dropdown-item">Profile</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" (click)="logout()">Logout</a>
                 </div>

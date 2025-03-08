@@ -1,7 +1,7 @@
 namespace API.Data;
 
-using API.DTOs;
 using API.Entities;
+using API.DTOs;
 using API.Helpers;
 
 public interface IUserRepository
@@ -12,5 +12,5 @@ public interface IUserRepository
     public Task<AppUser?> GetByIdAsync(int id);
     public Task<AppUser?> GetByUsernameAsync(string username);
     public Task<PagedList<MemberReponse>> GetMembersAsync(UserParams userParams);
-    public Task<MemberReponse?> GetMemeberAsync(string username);
+    public Task<MemberReponse?> GetMemberAsync(string username);
 }

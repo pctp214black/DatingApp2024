@@ -10,7 +10,6 @@ import { environment } from '../../environments/environment';
 export class AccountService {
   private http = inject(HttpClient);
   baseUrl = environment.apiUrl;
-
   currentUser = signal<User | null>(null);
 
   login(model: any): Observable<User | void> {
@@ -38,7 +37,6 @@ export class AccountService {
     localStorage.setItem("user", JSON.stringify(user));
     this.currentUser.set(user);
   }
-
 
   logout(): void {
     localStorage.removeItem("user");

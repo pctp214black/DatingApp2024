@@ -1,6 +1,6 @@
 @if (member) { <div class="row">
     <div class="col-4">
-        <div class="card"> <img src="{{member.photoUrl}}" alt="{{member.knownAs}}" class="card-img img-thumbnail">
+        <div class="card"> <img src="{{member.photoUrl || './assets/default_user.jpg'}}" alt="{{member.knownAs}}" class="card-img img-thumbnail">
             <div class="card-body">
                 <div> <strong>Location:</strong>
                     <p>{{member.city}}, {{member.country}}</p>
@@ -12,7 +12,7 @@
                     <p>{{member.lastActive | timeago}}</p>
                 </div>
                 <div> <strong>Member since:</strong>
-                    <p>{{member.created | timeago}}</p>
+                    <p>{{member.created | date: "MMMM YYYY"}}</p>
                 </div>
             </div>
             <div class="card-footer">

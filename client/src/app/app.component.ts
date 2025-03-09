@@ -10,7 +10,7 @@ import { NgxSpinner, NgxSpinnerComponent } from 'ngx-spinner';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgFor,NavComponent, BsDropdownModule,HomeComponent,NgxSpinnerComponent],
+  imports: [RouterOutlet, NavComponent, BsDropdownModule,NgxSpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

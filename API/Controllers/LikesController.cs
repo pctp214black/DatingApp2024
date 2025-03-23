@@ -1,8 +1,10 @@
 namespace API.Controllers;
 
+using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,10 +37,11 @@ public class LikesController(ILikesRepository likesRepository) : BaseApiControll
         => Ok(await likesRepository.GetCurrentUserLikeIdsAsync(User.GetUserId()));
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MemberReponse>>> GetUserLikes(string predicate)
+    public async Task<ActionResult<IEnumerable<MemberReponse>>> GetUserLikes([FromQuery] LikesParams likesParams)
     {
-        var users = await likesRepository.GetUserLikesAsync(predicate, User.GetUserId());
-
+        likesParams.UserId = User.GetUserId();
+        var users = await likesRepository.GetUserLikesAsync(likesParams);
+        Response.AddPaginationHeader(users);
         return Ok(users);
     }
 }

@@ -1,22 +1,35 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import {provideAnimations} from '@angular/platform-browser/animations';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideToastr } from 'ngx-toastr';
 import { errorInterceptor } from './_interceptor/error.interceptor';
+import { jwtInterceptor } from './_interceptor/jwt.interceptor';
+import { GALLERY_CONFIG, GalleryConfig } from 'ng-gallery';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { loadingInterceptor } from './_interceptor/loading.interceptor';
+import { TimeagoModule } from 'ngx-timeago';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([errorInterceptor])),
+    provideHttpClient(withInterceptors([errorInterceptor, jwtInterceptor,loadingInterceptor])),
     provideAnimations(),
     provideToastr({
-      positionClass:"toast-bottom-right",
-      
-    })
+      positionClass: "toast-bottom-right",
+
+    }),
+    importProvidersFrom(NgxSpinnerModule,TimeagoModule.forRoot()),
+    {
+      provide: GALLERY_CONFIG,
+      useValue: {
+        autoHeight: true,
+        imageSize: 'contain'
+      } as GalleryConfig
+    }
   ]
 };
 

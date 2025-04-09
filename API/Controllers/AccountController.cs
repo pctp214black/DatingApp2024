@@ -4,71 +4,76 @@ using System.Text;
 using API.Data;
 using API.DTOs;
 using API.Entities;
-using API.Interfaces;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using API.Interfaces;
+
 public class AccountController(
-    DataContext context
-    , ITokenService tokenService) : BaseApiController
+    DataContext context,
+    ITokenService tokenService,
+    IMapper mapper) : BaseApiController
 {
-
-
     [HttpPost("register")]
-    public async Task<ActionResult<UserResponse>> RegisterAsync([FromBody] RegisterRequest request)
+    public async Task<ActionResult<UserResponse>> RegisterAsync(RegisterRequest request)
     {
-        if (await UserExistsAsync(request.UserName))
-            return BadRequest("Username already exists");
-        // using var hmac = new HMACSHA512();
-
-        // var user = new AppUser
-        // {
-        //     UserName = request.UserName,
-        //     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password)),
-        //     PasswordSalt = hmac.Key
-        // };
-
-        // context.Users.Add(user);
-        // await context.SaveChangesAsync();
-        // return new UserResponse
-        // {
-        //     Username = user.UserName,
-        //     Token = tokenService.CreateToken(user)
-        // };
-
-        return Ok();
-    }
-
-    [HttpPost("login")]
-    public async Task<ActionResult<UserResponse>> Login(LoginRequest request)
-    {
-        var user = await context.Users.FirstOrDefaultAsync(x =>
-            x.UserName.ToLower() == request.UserName.ToLower()
-        );
-        if (user == null)
+        if (await UserExistsAsync(request.Username))
         {
-            return Unauthorized("Invalid username or password");
+            return BadRequest("Username already in use");
         }
-        using var hmac = new HMACSHA512(user.PasswordSalt);
-        var computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
-        for (int i = 0; i < computeHash.Length; i++)
-        {
-            if (computeHash[i] != user.PasswordHash[i])
-            {
-                return Unauthorized("Invalid username or password");
-            }
-        }
+
+        using var hmac = new HMACSHA512();
+        var user = mapper.Map<AppUser>(request);
+        user.UserName = request.Username.ToLowerInvariant();
+        // user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
+        // user.PasswordSalt = hmac.Key;
+
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
 
         return new UserResponse
         {
             Username = user.UserName,
-            Token = tokenService.CreateToken(user)
+            Token = tokenService.CreateToken(user),
+            KnownAs = user.KnownAs,
+            Gender = user.Gender
         };
     }
 
-    private async Task<bool> UserExistsAsync(string username)
+    [HttpPost("login")]
+    public async Task<ActionResult<UserResponse>> LoginAsync(LoginRequest request)
     {
-        return await context.Users.AnyAsync(
-            user => user.UserName.ToUpper() == username.ToUpper()
-        );
+        var user = await context.Users
+            .Include(x => x.Photos)
+            .FirstOrDefaultAsync(x => x.UserName.ToLower() == request.UserName.ToLower());
+
+        if (user == null)
+        {
+            return Unauthorized("Invalid username or password");
+        }
+
+        // using var hmac = new HMACSHA512(user.PasswordSalt);
+        // var computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
+
+        // for (var i = 0; i < computeHash.Length; i++)
+        // {
+        //     if (computeHash[i] != user.PasswordHash[i])
+        //     {
+        //         return Unauthorized("Invalid username or password");
+        //     }
+        // }
+
+        return new UserResponse
+        {
+            Username = user.UserName!,
+            KnownAs = user.KnownAs,
+            Token = tokenService.CreateToken(user),
+            Gender = user.Gender,
+            PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
+        };
     }
+
+    private async Task<bool> UserExistsAsync(string username) =>
+        await context.Users.AnyAsync(u => u.UserName.ToLower() == username.ToLower());
 }

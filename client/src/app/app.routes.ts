@@ -10,25 +10,27 @@ import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { preventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
+import { memberDetailedResolver } from './_resolvers/member-detailed.resolver';
 
 export const routes: Routes = [
-    {path:"",component:HomeComponent},
+    {path: "", component: HomeComponent},
     {
-        path:"",
-        runGuardsAndResolvers:"always",
-        canActivate:[authGuard],
+        path: "",
+        runGuardsAndResolvers: "always",
+        canActivate: [authGuard],
         children:[
-            {path:"members",component:MemberListComponent,canActivate:[authGuard]},
-            {path:"members/:username",component:MemberDetailComponent},
-            {path:"member/edit",component:MemberEditComponent,canDeactivate:[preventUnsavedChangesGuard]},
-            {path:"lists",component:ListsComponent},
-            {path:"messages",component:MessagesComponent},
+            {path: "members", component: MemberListComponent,
+                canActivate: [authGuard]},
+            {path: "members/:username", component: MemberDetailComponent,
+                resolve: { member: memberDetailedResolver }},
+            {path: "member/edit", component: MemberEditComponent,
+                canDeactivate: [preventUnsavedChangesGuard]},
+            {path: "lists", component: ListsComponent},
+            {path: "messages", component: MessagesComponent},
         ]
     },
-    {path:"errors",component:TestErrorsComponent},
-    {path:"not-found",component:NotFoundComponent},
-    {path:"server-error",component:ServerErrorComponent},
-    {path:"**",component:HomeComponent,pathMatch:"full"},
-
-    
+    {path: "errors", component: TestErrorsComponent},
+    {path: "not-found", component: NotFoundComponent},
+    {path: "server-error", component: ServerErrorComponent},
+    {path: "**", component: HomeComponent, pathMatch: "full"},
 ];

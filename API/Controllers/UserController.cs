@@ -39,7 +39,7 @@ public class UsersController : BaseApiController
     [HttpGet("{username}", Name = "GetByUsername")] // api/users/Calamardo
     public async Task<ActionResult<MemberReponse>> GetByUsernameAsync(string username)
     {
-        var member = await _repository.GetMemberAsync(username);
+        var member = await _repository.GetMemberAsync(username.ToLowerInvariant());
 
         if (member == null)
         {
@@ -114,19 +114,23 @@ public class UsersController : BaseApiController
     {
         var user = await _repository.GetByUsernameAsync(User.GetUserName());
 
-        if (user == null) return BadRequest("User not found");
+        if (user == null)
+            return BadRequest("User not found");
 
         var photo = user.Photos.FirstOrDefault(p => p.Id == photoId);
 
-        if (photo == null || photo.IsMain) return BadRequest("Can't set this photo as the main one!");
+        if (photo == null || photo.IsMain)
+            return BadRequest("Can't set this photo as the main one!");
 
         var currentMain = user.Photos.FirstOrDefault(p => p.IsMain);
 
-        if (currentMain != null) currentMain.IsMain = false;
+        if (currentMain != null)
+            currentMain.IsMain = false;
 
         photo.IsMain = true;
 
-        if (await _repository.SaveAllAsync()) return NoContent();
+        if (await _repository.SaveAllAsync())
+            return NoContent();
 
         return BadRequest("There was a problem.");
     }
@@ -136,34 +140,38 @@ public class UsersController : BaseApiController
     {
         var user = await _repository.GetByUsernameAsync(User.GetUserName());
 
-        if (user == null) return BadRequest("User not found");
+        if (user == null)
+            return BadRequest("User not found");
 
         var photo = user.Photos.FirstOrDefault(p => p.Id == photoId);
 
-        if (photo == null || photo.IsMain) return BadRequest("This photo can't be deleted");
+        if (photo == null || photo.IsMain)
+            return BadRequest("This photo can't be deleted");
 
         if (photo.PublicId != null)
         {
             var result = await _photoService.DeletePhotoAsync(photo.PublicId);
-            if (result.Error != null) return BadRequest(result.Error.Message);
+            if (result.Error != null)
+                return BadRequest(result.Error.Message);
         }
 
         user.Photos.Remove(photo);
 
-        if (await _repository.SaveAllAsync()) return Ok();
+        if (await _repository.SaveAllAsync())
+            return Ok();
 
         return BadRequest("There was a problem when deleting the photo");
     }
 }
 
 
- // [Authorize]
-    // [HttpGet("{id:int}")]
-    // public async Task<ActionResult<MemberReponse>> GetUserById(int id)
-    // {
-    //     var user = await _repository.GetByIdAsync(id);
+// [Authorize]
+// [HttpGet("{id:int}")]
+// public async Task<ActionResult<MemberReponse>> GetUserById(int id)
+// {
+//     var user = await _repository.GetByIdAsync(id);
 
-    //     if (user == null)
-    //         return NotFound();
-    //     return _mapper.Map<MemberReponse>(user);
-    // }
+//     if (user == null)
+//         return NotFound();
+//     return _mapper.Map<MemberReponse>(user);
+// }

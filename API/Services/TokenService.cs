@@ -1,25 +1,41 @@
+namespace API.Services;
+
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using API.Entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace API.Services;
-
-public class TokenService(IConfiguration config) : ITokenService
+public class TokenService(IConfiguration config, UserManager<AppUser> userManager) : ITokenService
 {
-    public string CreateToken(AppUser user)
+    public async Task<string> CreateToken(AppUser user)
     {
-        var tokenKey = config["TokenKey"] ?? throw new Exception("TokenKey not found");
+        var tokenKey = config["TokenKey"] ?? throw new ArgumentException("TokenKey not found");
         if (tokenKey.Length < 64)
-            throw new Exception("TokenKey too short");
+        {
+            throw new ArgumentException("TokenKey too short");
+        }
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
-        var claims = new List<Claim>{
-            new (ClaimTypes.NameIdentifier,user.Id.ToString(CultureInfo.InvariantCulture)),
-            new (ClaimTypes.Name,user.UserName)
+
+        if (user.UserName == null)
+        {
+            throw new ArgumentException("No username for user");
+        }
+
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString(CultureInfo.InvariantCulture)),
+            new(ClaimTypes.Name, user.UserName)
         };
+
+        var roles = await userManager.GetRolesAsync(user);
+
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
         var tokenDescriptor = new SecurityTokenDescriptor

@@ -9,9 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using API.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 public class AccountController(
-    DataContext context,
+    UserManager<AppUser> userManager,
     ITokenService tokenService,
     IMapper mapper) : BaseApiController
 {
@@ -29,8 +30,12 @@ public class AccountController(
         // user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
         // user.PasswordSalt = hmac.Key;
 
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
+        // context.Users.Add(user);
+        // await context.SaveChangesAsync();
+        var result = await userManager.CreateAsync(user, request.Password);
+
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
 
         return new UserResponse
         {
@@ -44,9 +49,9 @@ public class AccountController(
     [HttpPost("login")]
     public async Task<ActionResult<UserResponse>> LoginAsync(LoginRequest request)
     {
-        var user = await context.Users
+        var user = await userManager.Users
             .Include(x => x.Photos)
-            .FirstOrDefaultAsync(x => x.UserName.ToLower() == request.UserName.ToLower());
+            .FirstOrDefaultAsync(x => x.NormalizedUserName == request.UserName.ToUpperInvariant());
 
         if (user == null)
         {
@@ -64,6 +69,13 @@ public class AccountController(
         //     }
         // }
 
+        var result = await userManager.CheckPasswordAsync(user, request.Password);
+
+        if (!result)
+        {
+            return Unauthorized("Invalid username or password");
+        }
+
         return new UserResponse
         {
             Username = user.UserName!,
@@ -75,5 +87,5 @@ public class AccountController(
     }
 
     private async Task<bool> UserExistsAsync(string username) =>
-        await context.Users.AnyAsync(u => u.UserName.ToLower() == username.ToLower());
+        await userManager.Users.AnyAsync(u => u.NormalizedUserName == username.ToUpperInvariant());
 }

@@ -1,15 +1,13 @@
 namespace API.Controllers;
-using System.Security.Cryptography;
-using System.Text;
-using API.Data;
+
 using API.DTOs;
 using API.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using API.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using API.Interfaces;
 
 public class AccountController(
     UserManager<AppUser> userManager,
@@ -24,23 +22,19 @@ public class AccountController(
             return BadRequest("Username already in use");
         }
 
-        using var hmac = new HMACSHA512();
         var user = mapper.Map<AppUser>(request);
         user.UserName = request.Username.ToLowerInvariant();
-        // user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
-        // user.PasswordSalt = hmac.Key;
-
-        // context.Users.Add(user);
-        // await context.SaveChangesAsync();
         var result = await userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
+        {
             return BadRequest(result.Errors);
+        }
 
         return new UserResponse
         {
             Username = user.UserName,
-            Token = tokenService.CreateToken(user),
+            Token = await tokenService.CreateToken(user),
             KnownAs = user.KnownAs,
             Gender = user.Gender
         };
@@ -53,21 +47,10 @@ public class AccountController(
             .Include(x => x.Photos)
             .FirstOrDefaultAsync(x => x.NormalizedUserName == request.UserName.ToUpperInvariant());
 
-        if (user == null)
+        if (user == null || user.UserName == null)
         {
             return Unauthorized("Invalid username or password");
         }
-
-        // using var hmac = new HMACSHA512(user.PasswordSalt);
-        // var computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
-
-        // for (var i = 0; i < computeHash.Length; i++)
-        // {
-        //     if (computeHash[i] != user.PasswordHash[i])
-        //     {
-        //         return Unauthorized("Invalid username or password");
-        //     }
-        // }
 
         var result = await userManager.CheckPasswordAsync(user, request.Password);
 
@@ -78,9 +61,9 @@ public class AccountController(
 
         return new UserResponse
         {
-            Username = user.UserName!,
+            Username = user.UserName,
             KnownAs = user.KnownAs,
-            Token = tokenService.CreateToken(user),
+            Token = await tokenService.CreateToken(user),
             Gender = user.Gender,
             PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
         };

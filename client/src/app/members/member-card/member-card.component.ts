@@ -1,7 +1,8 @@
-import { Component, inject, input, ViewEncapsulation,computed } from '@angular/core';
+import { Component, computed, inject, input, ViewEncapsulation } from '@angular/core';
 import { Member } from '../../_models/member';
 import { RouterLink } from '@angular/router';
 import { LikesService } from '../../_services/likes.service';
+import { PresenceService } from '../../_services/presence.service';
 
 @Component({
   selector: 'app-member-card',
@@ -9,20 +10,22 @@ import { LikesService } from '../../_services/likes.service';
   imports: [RouterLink],
   templateUrl: './member-card.component.html',
   styleUrl: './member-card.component.css',
-  encapsulation:ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None
 })
 export class MemberCardComponent {
-  private likesService=inject(LikesService);
-  member=input.required<Member>();
-  hasLiked=computed(()=>this.likesService.likeIds().includes(this.member().id));
+  private likesService = inject(LikesService);
+  private presenceService = inject(PresenceService);
+  member = input.required<Member>();
+  hasLiked = computed(() => this.likesService.likeIds().includes(this.member().id));
+  isOnline = computed(() => this.presenceService.onlineUsers().includes(this.member().userName));
 
-  toogleLike(){
+  toogleLike() {
     this.likesService.toogleLike(this.member().id).subscribe({
-      next:()=>{
-        if(this.hasLiked()){
-          this.likesService.likeIds.update(ids=>ids.filter(i=>i!==this.member().id));
-        }else{
-          this.likesService.likeIds.update(ids=>[...ids,this.member().id]);
+      next: () => {
+        if (this.hasLiked()) {
+          this.likesService.likeIds.update(ids => ids.filter(i => i !== this.member().id));
+        } else {
+          this.likesService.likeIds.update(ids => [...ids, this.member().id]);
         }
       }
     });

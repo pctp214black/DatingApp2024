@@ -3,10 +3,9 @@ namespace API.Data;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
-using API.DTOs;
 using API.Entities;
+using API.DTOs;
 using API.Helpers;
-using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +13,7 @@ using Microsoft.EntityFrameworkCore;
 public class LikesRepository(DataContext context, IMapper mapper) : ILikesRepository
 {
     public void AddLike(UserLike like) => context.Likes.Add(like);
-    public void RemoveLike(UserLike like) => context.Likes.Remove(like);
-    
+
     public async Task<IEnumerable<int>> GetCurrentUserLikeIdsAsync(int currentUSerId)
         => await context.Likes
             .Where(l => l.SourceUserId == currentUSerId)
@@ -25,7 +23,7 @@ public class LikesRepository(DataContext context, IMapper mapper) : ILikesReposi
     public async Task<UserLike?> GetUserLikeAsync(int sourceUserId, int targerUserId)
         => await context.Likes.FindAsync(sourceUserId, targerUserId);
 
-     public async Task<PagedList<MemberReponse>> GetUserLikesAsync(LikesParams likesParams)
+    public async Task<PagedList<MemberReponse>> GetUserLikesAsync(LikesParams likesParams)
     {
         var likes = context.Likes.AsQueryable();
         IQueryable<MemberReponse> query;
@@ -56,5 +54,5 @@ public class LikesRepository(DataContext context, IMapper mapper) : ILikesReposi
         return await PagedList<MemberReponse>.CreateAsync(query, likesParams.PageNumber, likesParams.PageSize);
     }
 
-    public async Task<bool> SaveChangesAsync() => await context.SaveChangesAsync() > 0;
+    public void RemoveLike(UserLike userLike) => context.Likes.Remove(userLike);
 }

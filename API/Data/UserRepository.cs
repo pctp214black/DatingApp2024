@@ -1,6 +1,7 @@
 namespace API.Data;
 
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using API.Entities;
 using API.DTOs;
@@ -8,7 +9,6 @@ using API.Helpers;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 
 public class UserRepository(DataContext context, IMapper mapper) : IUserRepository
 {
@@ -18,9 +18,7 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
                 .ToListAsync();
 
     public async Task<AppUser?> GetByIdAsync(int id)
-        => await context.Users
-                .Include(u => u.Photos)
-                .FirstOrDefaultAsync(u => u.Id == id);
+        => await context.Users.FindAsync(id);
 
     public async Task<AppUser?> GetByUsernameAsync(string username)
         => await context.Users
@@ -38,11 +36,6 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
         var query = context.Users.AsQueryable();
 
         query = query.Where(u => u.UserName != userParams.CurrentUsername);
-        query = userParams.OrderBy.ToLower(CultureInfo.InvariantCulture) switch
-        {
-            "created" => query.OrderByDescending(x => x.Created),
-            _ => query.OrderByDescending(x => x.LastActive)
-        };
 
         if (userParams.Gender != null)
         {
@@ -54,12 +47,15 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
 
         query = query.Where(u => u.BirthDay >= minBDay && u.BirthDay <= maxBDay);
 
+        query = userParams.OrderBy.ToLower(CultureInfo.InvariantCulture) switch
+        {
+            "created" => query.OrderByDescending(x => x.Created),
+            _ => query.OrderByDescending(x => x.LastActive)
+        };
+
         return await PagedList<MemberReponse>.CreateAsync(
             query.ProjectTo<MemberReponse>(mapper.ConfigurationProvider), userParams.PageNumber, userParams.PageSize);
     }
-
-    public async Task<bool> SaveAllAsync()
-        => await context.SaveChangesAsync() > 0;
 
     public void Update(AppUser user)
         => context.Entry(user).State = EntityState.Modified;
